@@ -3,1035 +3,901 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Personagem RPG</title>
+    <title>Ficha de Personagem - O Chamado do Mar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #121824;
-            --border-color: #2a3447;
-            --text-color: #e2e8f0;
-            --text-muted: #94a3b8;
-            --accent-for: #8b1528; /* Vinho saturado */
-            --accent-agi: #0d6e52; /* Verde saturado */
-            --accent-int: #6b21a8; /* Roxo saturado */
-            --accent-pre: #1e40af; /* Azul saturado */
-            --skill-highlight: #22c55e;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 15px;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(26, 44, 76, 0.3) 0%, transparent 75%),
+                radial-gradient(circle at 0% 100%, rgba(30, 10, 20, 0.25) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
-        /* BANNER TOPO / CONTROLES DE ARQUIVO */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
         }
 
-        .header-inputs {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            flex: 1;
-        }
-
-        .header-field {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .header-field label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .header-field input, .header-field select {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 5px 8px;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn {
-            background: #1e293b;
-            color: #fff;
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn:hover {
-            background: #334155;
-        }
-
-        .btn-pdf {
-            background: #b91c1c;
-            border-color: #ef4444;
-        }
-        .btn-pdf:hover {
-            background: #dc2626;
-        }
-
-        /* GRID PRINCIPAL */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 320px 380px 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 1100px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .column {
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* ATRIBUTOS & RADAR GRAPH */
-        .attributes-container {
+        /* Container dos Atributos */
+        .attribute-container {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 270px;
+            height: 270px;
             margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .radar-svg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        /* Scrollbar Personalizada */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
         }
-
-        .diamond-stat {
-            position: absolute;
-            width: 75px;
-            height: 75px;
-            transform: rotate(45deg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            z-index: 2;
-            border-radius: 6px;
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
         }
-
-        .stat-content {
-            transform: rotate(-45deg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            font-weight: 900;
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        .stat-input {
-            width: 36px;
-            height: 22px;
-            background: #000;
-            border: 1px solid rgba(255,255,255,0.4);
-            color: #fff;
-            text-align: center;
-            font-weight: bold;
-            font-size: 13px;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
             border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+
+        /* Design do Escudo de Defesas */
+        .shield-box {
+            position: relative;
+            width: 44px;
+            height: 50px;
+            background: #000000;
+            clip-path: polygon(50% 0%, 100% 15%, 100% 65%, 50% 100%, 0% 65%, 0% 15%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+        }
+
+        .shield-wrapper {
+            filter: drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.3));
+        }
+
+        /* Inputs e Selects */
+        input[type="text"], input[type="number"], select, textarea {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            transition: all 0.2s ease;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+            border-color: #3b82f6;
             outline: none;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
         }
 
-        .stat-for { top: 10px; left: 102px; background: var(--accent-for); }
-        .stat-agi { top: 102px; right: 10px; background: var(--accent-agi); }
-        .stat-pre { bottom: 10px; left: 102px; background: var(--accent-pre); }
-        .stat-int { top: 102px; left: 10px; background: var(--accent-int); }
-
-        /* BARRAS DE STATUS */
-        .bars-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* Remover setas nativas dos inputs de número */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-
-        .bar-group {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .bar-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: bold;
-        }
-
-        .bar-controls {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .bar-btn {
-            background: #1e293b;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            width: 24px;
-            height: 26px;
-            border-radius: 4px;
-            cursor: pointer;
-            user-select: none;
-            font-size: 10px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .bar-btn:active {
-            background: #475569;
-            color: #fff;
-        }
-
-        .bar-wrapper {
-            flex: 1;
-            height: 26px;
-            background: #000;
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-        }
-
-        .bar-fill {
-            height: 100%;
-            transition: width 0.2s ease;
-        }
-
-        .bar-text {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-weight: bold;
-            font-size: 12px;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        .bar-max-input {
-            width: 45px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            text-align: center;
-            padding: 2px;
-            border-radius: 4px;
-            font-size: 11px;
-        }
-
-        .fill-vida { background: linear-gradient(90deg, #620d19, #ab1932); }
-        .fill-escudo { background: linear-gradient(90deg, #4c1d95, #7e22ce); }
-        .fill-esforco { background: linear-gradient(90deg, #1e3a8a, #2563eb); }
-
-        /* DEFESAS */
-        .defenses-title {
-            text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-        }
-
-        .defenses-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .defense-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .defense-label {
-            font-size: 10px;
-            font-weight: bold;
-            color: var(--text-muted);
-        }
-
-        .shield-svg-container {
-            position: relative;
-            width: 55px;
-            height: 65px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .shield-svg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .defense-input {
-            position: relative;
-            z-index: 2;
-            width: 32px;
-            background: transparent;
-            border: none;
-            color: #fff;
-            text-align: center;
-            font-size: 14px;
-            font-weight: bold;
-            outline: none;
-        }
-
-        /* PERÍCIAS */
-        .skills-header {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-            font-size: 10px;
-            font-weight: bold;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-            text-align: center;
-        }
-
-        .skills-header div:first-child { text-align: left; }
-
-        .skills-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-height: 580px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .skill-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-            align-items: center;
-            font-size: 11px;
-            gap: 2px;
-        }
-
-        .skill-name {
-            font-weight: 600;
-        }
-
-        .skill-attr {
-            color: var(--text-muted);
-            text-align: center;
-            font-size: 10px;
-        }
-
-        .skill-input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            text-align: center;
-            border-radius: 3px;
-            padding: 2px;
-            width: 100%;
-            font-size: 11px;
-        }
-
-        .skill-total {
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .skill-has-points {
-            color: var(--skill-highlight);
-        }
-
-        /* MENU DE ABAS */
-        .tabs-header {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-            gap: 5px;
+        input[type=number] {
+            -moz-appearance: textfield;
         }
 
         .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
             border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
         }
-
         .tab-btn.active {
-            color: #fff;
             border-bottom-color: #3b82f6;
+            color: #60a5fa;
+            background: rgba(30, 58, 138, 0.2);
         }
 
-        .tab-content {
-            display: none;
-            flex-direction: column;
-            gap: 15px;
+        .skill-row:hover {
+            background-color: rgba(255, 255, 255, 0.02);
         }
 
-        .tab-content.active {
-            display: flex;
-        }
-
-        /* ROLADOR DE DADOS */
-        .dice-section {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
+        /* Losangos Individuais dos Atributos */
+        .attribute-diamond {
+            width: 72px;
+            height: 72px;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
         }
 
-        .dice-input-group {
-            display: flex;
-            gap: 5px;
+        .diamond-for {
+            background: linear-gradient(135deg, #541838 0%, #290a1a 100%);
+            border-color: #9d174d;
         }
 
-        .dice-input-group input {
-            flex: 1;
-            background: #000;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 6px;
-            border-radius: 4px;
-            outline: none;
+        .diamond-int {
+            background: linear-gradient(135deg, #3c1859 0%, #1e0d30 100%);
+            border-color: #7e22ce;
         }
 
-        .dice-log {
-            background: #000;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            height: 100px;
-            overflow-y: auto;
-            padding: 8px;
-            font-family: monospace;
-            font-size: 11px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .diamond-agi {
+            background: linear-gradient(135deg, #0c453c 0%, #062421 100%);
+            border-color: #0f766e;
         }
 
-        .log-entry {
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 2px;
-        }
-        .log-entry .result {
-            color: #38bdf8;
-            font-weight: bold;
+        .diamond-pre {
+            background: linear-gradient(135deg, #0f2a52 0%, #07152b 100%);
+            border-color: #1d4ed8;
         }
 
-        /* TABELAS DINÂMICAS (ATAQUES, HABILIDADES, INVENTÁRIO) */
-        .dynamic-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 420px;
-            overflow-y: auto;
-        }
-
-        .card-item {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            position: relative;
-        }
-
-        .card-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .card-row input, .card-row select, .card-row textarea {
-            background: #000;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-            outline: none;
-        }
-
-        .card-row input[type="text"] { flex: 1; }
-        
-        .btn-delete {
-            background: #7f1d1d;
-            color: #fff;
-            border: none;
-            padding: 2px 6px;
-            border-radius: 3px;
+        .hold-btn {
+            user-select: none;
+            -webkit-user-select: none;
             cursor: pointer;
-            font-size: 10px;
-            align-self: flex-end;
         }
 
-        .notes-area {
-            width: 100%;
-            height: 350px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px;
-            border-radius: 6px;
-            resize: vertical;
-            outline: none;
-        }
-
-        /* IMPRESSÃO / SALVAMENTO EM PDF FORMATADO */
+        /* ESTILO PARA EXPORTAÇÃO EM PDF / IMPRESSÃO */
         @media print {
             body {
-                background: #fff !important;
-                color: #000 !important;
-                padding: 0;
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
             }
-            .top-bar .btn-group, .bar-controls button, .btn-delete, .btn, .tabs-header {
+            header, button, .hold-btn, .tab-btn, .no-print {
                 display: none !important;
             }
-            .grid-container {
+            .tab-panel {
                 display: block !important;
             }
-            .column {
-                background: #fff !important;
+            input, select, textarea {
+                background: #ffffff !important;
+                color: #000000 !important;
                 border: 1px solid #ccc !important;
-                color: #000 !important;
-                page-break-inside: avoid;
-                margin-bottom: 15px;
+                box-shadow: none !important;
             }
-            .header-field input, .header-field select, .stat-input, .skill-input, .card-row input, .card-row select, .card-row textarea, .notes-area {
-                background: #fff !important;
-                color: #000 !important;
-                border: 1px solid #999 !important;
+            .shield-box {
+                background: #ffffff !important;
+                border: 2px solid #000000 !important;
             }
-            .bar-wrapper {
+            .shield-box input {
+                color: #000000 !important;
+            }
+            .attribute-diamond {
                 border: 1px solid #000 !important;
+                background: #f1f5f9 !important;
             }
-            .bar-text {
-                color: #000 !important;
+            .attribute-diamond span {
+                color: #000000 !important;
                 text-shadow: none !important;
             }
-            .tab-content {
-                display: flex !important;
+            .attribute-diamond input {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border: 1px solid #000 !important;
             }
-            .skills-list, .dynamic-list {
-                max-height: none !important;
-                overflow: visible !important;
+            main {
+                display: block !important;
+            }
+            section {
+                background: #ffffff !important;
+                border: 1px solid #ddd !important;
+                margin-bottom: 20px !important;
+                page-break-inside: avoid;
+            }
+            .text-emerald-400 {
+                color: #047857 !important;
+            }
+            .text-amber-400 {
+                color: #b45309 !important;
+            }
+            .text-slate-200, .text-slate-300, .text-slate-400 {
+                color: #1e293b !important;
             }
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen p-3 md:p-5 pb-10">
 
-    <!-- BARRA SUPERIOR -->
-    <div class="top-bar">
-        <div class="header-inputs">
-            <div class="header-field">
-                <label>Personagem</label>
-                <input type="text" id="charName" oninput="saveData()">
+    <!-- Top Header -->
+    <header class="max-w-7xl mx-auto bg-slate-900/80 border border-slate-800 backdrop-blur-md rounded-xl p-3.5 mb-5 shadow-2xl">
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-3">
+            <!-- Header Inputs -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto flex-grow">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Personagem</label>
+                    <input type="text" id="char-name" class="w-full px-2.5 py-1 rounded text-xs font-medium" placeholder="Nome do Personagem" onchange="saveData()">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ancestral</label>
+                    <select id="char-ancestral" class="w-full px-2.5 py-1 rounded text-xs font-medium" onchange="applyAncestralBonus()">
+                        <option value="">Selecione um Ancestral...</option>
+                        <option value="Mafioso">Mafioso</option>
+                        <option value="Mercenário">Mercenário</option>
+                        <option value="Cavaleiro">Cavaleiro</option>
+                        <option value="Artista">Artista</option>
+                        <option value="Criminoso">Criminoso</option>
+                        <option value="Investigador/Detetive">Investigador / Detetive</option>
+                        <option value="Padre">Padre</option>
+                        <option value="Caçador">Caçador</option>
+                        <option value="Líder">Líder</option>
+                        <option value="Xamã">Xamã</option>
+                        <option value="Onmyoji">Onmyoji</option>
+                        <option value="Samurai">Samurai</option>
+                        <option value="Ninja">Ninja</option>
+                        <option value="Mongol">Mongol</option>
+                        <option value="Militar">Militar</option>
+                        <option value="Policial">Policial</option>
+                        <option value="Engenheiro">Engenheiro</option>
+                        <option value="Apostador">Apostador</option>
+                        <option value="Cultista">Cultista</option>
+                        <option value="Cientista">Cientista</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Profissão</label>
+                    <input type="text" id="char-class" class="w-full px-2.5 py-1 rounded text-xs font-medium" placeholder="Profissão" onchange="saveData()">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nível</label>
+                    <input type="number" id="char-level" class="w-full px-2.5 py-1 rounded text-xs font-medium" placeholder="1" min="1" max="100" onchange="saveData()">
+                </div>
             </div>
-            <div class="header-field">
-                <label>Ancestral</label>
-                <select id="charAncestral" onchange="applyAncestralBonus(); saveData();">
-                    <option value="">Selecione...</option>
-                    <option value="Mafioso">Mafioso</option>
-                    <option value="Mercenário">Mercenário</option>
-                    <option value="Cavaleiro">Cavaleiro</option>
-                    <option value="Artista">Artista</option>
-                    <option value="Criminoso">Criminoso</option>
-                    <option value="Investigador/Detetive">Investigador/Detetive</option>
-                    <option value="Padre">Padre</option>
-                    <option value="Caçador">Caçador</option>
-                    <option value="Líder">Líder</option>
-                    <option value="Xamã">Xamã</option>
-                    <option value="Onmyoji">Onmyoji</option>
-                    <option value="Samurai">Samurai</option>
-                    <option value="Ninja">Ninja</option>
-                    <option value="Mongol">Mongol</option>
-                    <option value="Militar">Militar</option>
-                    <option value="Policial">Policial</option>
-                    <option value="Engenheiro">Engenheiro</option>
-                    <option value="Apostador">Apostador</option>
-                    <option value="Cultista">Cultista</option>
-                    <option value="Cientista">Cientista</option>
-                </select>
-            </div>
-            <div class="header-field">
-                <label>Profissão</label>
-                <input type="text" id="charClass" oninput="saveData()">
-            </div>
-            <div class="header-field">
-                <label>Nível</label>
-                <input type="number" id="charLevel" value="1" min="1" style="width: 60px;" oninput="saveData()">
+
+            <!-- Header Controls -->
+            <div class="flex items-center gap-2 shrink-0">
+                <button onclick="window.print()" class="bg-red-700 hover:bg-red-600 text-white text-xs px-3 py-1.5 rounded-md font-semibold border border-red-500 flex items-center gap-1.5 transition shadow">
+                    <i class="fa-solid fa-file-pdf"></i> Exportar em PDF
+                </button>
+                <button onclick="exportJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-md font-medium border border-slate-700 flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-download"></i> Exportar
+                </button>
+                <label class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-md font-medium border border-slate-700 cursor-pointer flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-upload"></i> Importar
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="importJSON(event)">
+                </label>
+                <button onclick="resetData()" class="bg-red-950/40 hover:bg-red-900/60 text-red-300 text-xs px-2.5 py-1.5 rounded-md font-medium border border-red-800/50 flex items-center gap-1.5 transition" title="Resetar Ficha">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
             </div>
         </div>
-        <div class="btn-group">
-            <button class="btn btn-pdf" onclick="window.print()">🖨️ Exportar em PDF</button>
-            <button class="btn" onclick="exportJSON()">💾 Salvar Dados (JSON)</button>
-            <button class="btn" onclick="document.getElementById('importFile').click()">📂 Carregar Dados</button>
-            <input type="file" id="importFile" style="display:none" onchange="importJSON(event)">
-        </div>
-    </div>
+    </header>
 
-    <!-- MAIN GRID -->
-    <div class="grid-container">
+    <!-- Main Content Layout -->
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
 
-        <!-- COLUNA 1: ATRIBUTOS, BARRAS E DEFESAS -->
-        <div class="column">
-            <!-- ATRIBUTOS RADAR -->
-            <div class="attributes-container">
-                <svg class="radar-svg" viewBox="0 0 200 200">
-                    <circle cx="100" cy="100" r="85" fill="#080c14" stroke="#1e293b" stroke-width="2"/>
-                    <line x1="100" y1="15" x2="100" y2="185" stroke="#334155" stroke-dasharray="3,3"/>
-                    <line x1="15" y1="100" x2="185" y2="100" stroke="#334155" stroke-dasharray="3,3"/>
-                    <polygon id="radarPolygon" points="100,100 100,100 100,100 100,100" fill="rgba(56, 189, 248, 0.35)" stroke="#38bdf8" stroke-width="2"/>
-                </svg>
+        <!-- LEFT COLUMN: Attributes, Status Bars & Defenses -->
+        <section class="lg:col-span-3 space-y-5 bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 backdrop-blur-sm flex flex-col justify-between">
+            <div>
+                <!-- Campaign Title -->
+                <h1 class="text-center font-cinzel text-lg font-bold tracking-widest text-slate-200 uppercase mb-3 border-b border-slate-800 pb-2">
+                    O Chamado do Mar
+                </h1>
 
-                <div class="diamond-stat stat-for">
-                    <div class="stat-content">
-                        <span class="stat-label">FOR</span>
-                        <input type="number" id="attr_for" class="stat-input" value="0" max="99" oninput="updateStats(); saveData();">
-                    </div>
-                </div>
-                <div class="diamond-stat stat-agi">
-                    <div class="stat-content">
-                        <span class="stat-label">AGI</span>
-                        <input type="number" id="attr_agi" class="stat-input" value="0" max="99" oninput="updateStats(); saveData();">
-                    </div>
-                </div>
-                <div class="diamond-stat stat-pre">
-                    <div class="stat-content">
-                        <span class="stat-label">PRE</span>
-                        <input type="number" id="attr_pre" class="stat-input" value="0" max="99" oninput="updateStats(); saveData();">
-                    </div>
-                </div>
-                <div class="diamond-stat stat-int">
-                    <div class="stat-content">
-                        <span class="stat-label">INT</span>
-                        <input type="number" id="attr_int" class="stat-input" value="0" max="99" oninput="updateStats(); saveData();">
-                    </div>
-                </div>
-            </div>
+                <!-- Radar Graph & Attribute Diamonds -->
+                <div class="attribute-container my-2">
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="75" fill="#050810" stroke="#1e293b" stroke-width="2" />
+                        <circle cx="100" cy="100" r="55" fill="none" stroke="#0f172a" stroke-width="1" stroke-dasharray="2,2" />
+                        <circle cx="100" cy="100" r="35" fill="none" stroke="#0f172a" stroke-width="1" stroke-dasharray="2,2" />
+                        <circle cx="100" cy="100" r="15" fill="none" stroke="#0f172a" stroke-width="1" stroke-dasharray="2,2" />
 
-            <!-- BARRAS INTERATIVAS -->
-            <div class="bars-container">
-                <!-- VIDA -->
-                <div class="bar-group">
-                    <div class="bar-header">
-                        <span>VIDA</span>
-                        <div>Máx: <input type="number" id="bar_vida_max" class="bar-max-input" value="32" oninput="updateBars(); saveData();"></div>
-                    </div>
-                    <div class="bar-controls">
-                        <button class="bar-btn" onmousedown="startHold('vida', -5)" onmouseup="stopHold()" onmouseleave="stopHold()">&lt;&lt;</button>
-                        <button class="bar-btn" onmousedown="startHold('vida', -1)" onmouseup="stopHold()" onmouseleave="stopHold()">&lt;</button>
-                        <div class="bar-wrapper" onclick="toggleBarDisplay('vida')">
-                            <div id="bar_vida_fill" class="bar-fill fill-vida" style="width: 100%;"></div>
-                            <span id="bar_vida_text" class="bar-text">32 / 32</span>
+                        <line x1="100" y1="25" x2="100" y2="175" stroke="#1e293b" stroke-width="1" />
+                        <line x1="25" y1="100" x2="175" y2="100" stroke="#1e293b" stroke-width="1" />
+
+                        <polygon id="radar-polygon" points="100,100 100,100 100,100 100,100" 
+                                 fill="rgba(56, 189, 248, 0.45)" stroke="#38bdf8" stroke-width="2" stroke-linejoin="round" />
+
+                        <circle cx="100" cy="100" r="75" fill="none" stroke="#334155" stroke-width="1.5" />
+                    </svg>
+
+                    <!-- FOR (Topo) -->
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+                        <div class="attribute-diamond diamond-for">
+                            <span class="font-cinzel font-bold text-white text-[11px] tracking-wider drop-shadow">FOR</span>
+                            <input type="number" id="attr-for" min="0" max="99" class="w-9 h-5 bg-black text-center text-amber-400 font-bold border border-slate-700 rounded text-xs mt-0.5" value="0" onchange="updateAttribute('FOR', this.value)">
                         </div>
-                        <button class="bar-btn" onmousedown="startHold('vida', 1)" onmouseup="stopHold()" onmouseleave="stopHold()">&gt;</button>
-                        <button class="bar-btn" onmousedown="startHold('vida', 5)" onmouseup="stopHold()" onmouseleave="stopHold()">&gt;&gt;</button>
                     </div>
-                </div>
 
-                <!-- ESCUDO (Roxo) -->
-                <div class="bar-group">
-                    <div class="bar-header">
-                        <span>ESCUDO</span>
-                        <div>Máx: <input type="number" id="bar_escudo_max" class="bar-max-input" value="10" oninput="updateBars(); saveData();"></div>
-                    </div>
-                    <div class="bar-controls">
-                        <button class="bar-btn" onmousedown="startHold('escudo', -5)" onmouseup="stopHold()" onmouseleave="stopHold()">&lt;&lt;</button>
-                        <button class="bar-btn" onmousedown="startHold('escudo', -1)" onmouseup="stopHold()" onmouseleave="stopHold()">&lt;</button>
-                        <div class="bar-wrapper" onclick="toggleBarDisplay('escudo')">
-                            <div id="bar_escudo_fill" class="bar-fill fill-escudo" style="width: 100%;"></div>
-                            <span id="bar_escudo_text" class="bar-text">10 / 10</span>
+                    <!-- INT (Esquerda) -->
+                    <div class="absolute top-1/2 left-0 -translate-y-1/2 z-10">
+                        <div class="attribute-diamond diamond-int">
+                            <span class="font-cinzel font-bold text-white text-[11px] tracking-wider drop-shadow">INT</span>
+                            <input type="number" id="attr-int" min="0" max="99" class="w-9 h-5 bg-black text-center text-amber-400 font-bold border border-slate-700 rounded text-xs mt-0.5" value="0" onchange="updateAttribute('INT', this.value)">
                         </div>
-                        <button class="bar-btn" onmousedown="startHold('escudo', 1)" onmouseup="stopHold()" onmouseleave="stopHold()">&gt;</button>
-                        <button class="bar-btn" onmousedown="startHold('escudo', 5)" onmouseup="stopHold()" onmouseleave="stopHold()">&gt;&gt;</button>
                     </div>
-                </div>
 
-                <!-- ESFORÇO (Azul) -->
-                <div class="bar-group">
-                    <div class="bar-header">
-                        <span>ESFORÇO</span>
-                        <div>Máx: <input type="number" id="bar_esforco_max" class="bar-max-input" value="5" oninput="updateBars(); saveData();"></div>
-                    </div>
-                    <div class="bar-controls">
-                        <button class="bar-btn" onmousedown="startHold('esforco', -5)" onmouseup="stopHold()" onmouseleave="stopHold()">&lt;&lt;</button>
-                        <button class="bar-btn" onmousedown="startHold('esforco', -1)" onmouseup="stopHold()" onmouseleave="stopHold()">&lt;</button>
-                        <div class="bar-wrapper" onclick="toggleBarDisplay('esforco')">
-                            <div id="bar_esforco_fill" class="bar-fill fill-esforco" style="width: 100%;"></div>
-                            <span id="bar_esforco_text" class="bar-text">5 / 5</span>
+                    <!-- AGI (Direita) -->
+                    <div class="absolute top-1/2 right-0 -translate-y-1/2 z-10">
+                        <div class="attribute-diamond diamond-agi">
+                            <span class="font-cinzel font-bold text-white text-[11px] tracking-wider drop-shadow">AGI</span>
+                            <input type="number" id="attr-agi" min="0" max="99" class="w-9 h-5 bg-black text-center text-amber-400 font-bold border border-slate-700 rounded text-xs mt-0.5" value="0" onchange="updateAttribute('AGI', this.value)">
                         </div>
-                        <button class="bar-btn" onmousedown="startHold('esforco', 1)" onmouseup="stopHold()" onmouseleave="stopHold()">&gt;</button>
-                        <button class="bar-btn" onmousedown="startHold('esforco', 5)" onmouseup="stopHold()" onmouseleave="stopHold()">&gt;&gt;</button>
+                    </div>
+
+                    <!-- PRE (Embaixo) -->
+                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
+                        <div class="attribute-diamond diamond-pre">
+                            <span class="font-cinzel font-bold text-white text-[11px] tracking-wider drop-shadow">PRE</span>
+                            <input type="number" id="attr-pre" min="0" max="99" class="w-9 h-5 bg-black text-center text-amber-400 font-bold border border-slate-700 rounded text-xs mt-0.5" value="0" onchange="updateAttribute('PRE', this.value)">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- DEFESAS -->
-            <div class="defenses-title">DEFESAS & RESISTÊNCIAS</div>
-            <div class="defenses-grid">
-                <script>
-                    const defs = ['Impacto', 'Corte', 'Perfuração', 'Ritual', 'Ocultismo', 'Queimadura'];
-                    defs.forEach(d => {
-                        const id = d.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                        document.write(`
-                            <div class="defense-item">
-                                <span class="defense-label">${d.toUpperCase()}</span>
-                                <div class="shield-svg-container">
-                                    <svg class="shield-svg" viewBox="0 0 60 70">
-                                        <path d="M 30 5 L 55 15 V 35 C 55 55 30 65 30 65 C 30 65 5 55 5 35 V 15 Z" fill="#000" stroke="#fff" stroke-width="2"/>
-                                    </svg>
-                                    <input type="number" id="def_${id}" class="defense-input" value="0" oninput="saveData()">
+                <!-- Status Bars Section -->
+                <div class="space-y-3.5 mt-5">
+                    <!-- Vida (Vinho) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Vida</span>
+                            <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                                Máx: <input type="number" id="hp-max" class="w-10 h-4 text-center bg-slate-950 border border-slate-800 rounded text-[10px]" value="32" onchange="saveData()">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onmousedown="startHold('hp', -5)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('hp', -5)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&lt;&lt;</button>
+                            <button onmousedown="startHold('hp', -1)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('hp', -1)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&lt;</button>
+                            <div onclick="toggleBarDisplay('hp')" class="flex-grow bg-slate-950 h-6 rounded relative overflow-hidden border border-red-900/50 flex items-center justify-center cursor-pointer select-none">
+                                <div id="hp-bar" class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-[#88134d] to-[#b81d52] transition-all duration-300" style="width: 100%;"></div>
+                                <span id="hp-display" class="relative z-10 text-white font-bold text-xs tracking-wider drop-shadow">32 / 32</span>
+                            </div>
+                            <button onmousedown="startHold('hp', 1)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('hp', 1)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&gt;</button>
+                            <button onmousedown="startHold('hp', 5)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('hp', 5)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&gt;&gt;</button>
+                        </div>
+                    </div>
+
+                    <!-- Escudo (Roxo) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Escudo</span>
+                            <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                                Máx: <input type="number" id="shield-max" class="w-10 h-4 text-center bg-slate-950 border border-slate-800 rounded text-[10px]" value="10" onchange="saveData()">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onmousedown="startHold('shield', -5)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('shield', -5)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&lt;&lt;</button>
+                            <button onmousedown="startHold('shield', -1)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('shield', -1)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&lt;</button>
+                            <div onclick="toggleBarDisplay('shield')" class="flex-grow bg-slate-950 h-6 rounded relative overflow-hidden border border-purple-900/50 flex items-center justify-center cursor-pointer select-none">
+                                <div id="shield-bar" class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-[#4b1c72] to-[#8b2cf5] transition-all duration-300" style="width: 100%;"></div>
+                                <span id="shield-display" class="relative z-10 text-white font-bold text-xs tracking-wider drop-shadow">10 / 10</span>
+                            </div>
+                            <button onmousedown="startHold('shield', 1)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('shield', 1)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&gt;</button>
+                            <button onmousedown="startHold('shield', 5)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('shield', 5)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&gt;&gt;</button>
+                        </div>
+                    </div>
+
+                    <!-- Esforço (Azul) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Esforço</span>
+                            <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                                Máx: <input type="number" id="energy-max" class="w-10 h-4 text-center bg-slate-950 border border-slate-800 rounded text-[10px]" value="5" onchange="saveData()">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onmousedown="startHold('energy', -5)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('energy', -5)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&lt;&lt;</button>
+                            <button onmousedown="startHold('energy', -1)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('energy', -1)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&lt;</button>
+                            <div onclick="toggleBarDisplay('energy')" class="flex-grow bg-slate-950 h-6 rounded relative overflow-hidden border border-blue-900/50 flex items-center justify-center cursor-pointer select-none">
+                                <div id="energy-bar" class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-[#14376b] to-[#1e64d4] transition-all duration-300" style="width: 100%;"></div>
+                                <span id="energy-display" class="relative z-10 text-white font-bold text-xs tracking-wider drop-shadow">5 / 5</span>
+                            </div>
+                            <button onmousedown="startHold('energy', 1)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('energy', 1)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&gt;</button>
+                            <button onmousedown="startHold('energy', 5)" onmouseup="stopHold()" onmouseleave="stopHold()" ontouchstart="startHold('energy', 5)" ontouchend="stopHold()" class="hold-btn text-slate-400 hover:text-white px-1 text-xs font-bold">&gt;&gt;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Defenses Section -->
+                <div class="mt-5 border-t border-slate-800 pt-3">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center mb-2.5">Defesas & Resistências</h3>
+                    <div class="grid grid-cols-3 gap-y-3 gap-x-1">
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-slate-400 font-semibold mb-1">IMPACTO</span>
+                            <div class="shield-wrapper">
+                                <div class="shield-box">
+                                    <input type="number" id="def-impacto" class="w-full bg-transparent text-center font-bold text-white text-xs focus:outline-none" value="0" onchange="saveData()">
                                 </div>
                             </div>
-                        `);
-                    });
-                </script>
-            </div>
-        </div>
-
-        <!-- COLUNA 2: PERÍCIAS -->
-        <div class="column">
-            <div class="skills-header">
-                <div>PERÍCIA</div>
-                <div>ATTR</div>
-                <div>BÔNUS</div>
-                <div>TREINO</div>
-                <div>OUTROS</div>
-            </div>
-            <div class="skills-list" id="skillsList"></div>
-        </div>
-
-        <!-- COLUNA 3: ABA INTERATIVA (DADOS, ATAQUES, HAB, INV, NOTAS) -->
-        <div class="column">
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab('tab-combate')">Ataques</button>
-                <button class="tab-btn" onclick="switchTab('tab-habilidades')">Habilidades</button>
-                <button class="tab-btn" onclick="switchTab('tab-inventario')">Inventário</button>
-                <button class="tab-btn" onclick="switchTab('tab-dados')">Dados</button>
-                <button class="tab-btn" onclick="switchTab('tab-anotacoes')">Anotações</button>
-            </div>
-
-            <!-- ROLADOR DE DADOS -->
-            <div class="dice-section">
-                <div class="dice-input-group">
-                    <input type="text" id="diceFormula" placeholder="Ex: d20, 2d6+3, d4+2">
-                    <button class="btn" onclick="rollCustomDice()">Rolar</button>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-slate-400 font-semibold mb-1">CORTE</span>
+                            <div class="shield-wrapper">
+                                <div class="shield-box">
+                                    <input type="number" id="def-corte" class="w-full bg-transparent text-center font-bold text-white text-xs focus:outline-none" value="0" onchange="saveData()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-slate-400 font-semibold mb-1">PERFURAÇÃO</span>
+                            <div class="shield-wrapper">
+                                <div class="shield-box">
+                                    <input type="number" id="def-perfuracao" class="w-full bg-transparent text-center font-bold text-white text-xs focus:outline-none" value="0" onchange="saveData()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-slate-400 font-semibold mb-1">RITUAL</span>
+                            <div class="shield-wrapper">
+                                <div class="shield-box">
+                                    <input type="number" id="def-ritual" class="w-full bg-transparent text-center font-bold text-white text-xs focus:outline-none" value="0" onchange="saveData()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-slate-400 font-semibold mb-1">OCULTISMO</span>
+                            <div class="shield-wrapper">
+                                <div class="shield-box">
+                                    <input type="number" id="def-ocultismo" class="w-full bg-transparent text-center font-bold text-white text-xs focus:outline-none" value="0" onchange="saveData()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-[9px] text-slate-400 font-semibold mb-1">QUEIMADURA</span>
+                            <div class="shield-wrapper">
+                                <div class="shield-box">
+                                    <input type="number" id="def-queimadura" class="w-full bg-transparent text-center font-bold text-white text-xs focus:outline-none" value="0" onchange="saveData()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="btn-group">
-                    <button class="btn" onclick="quickRoll('d4')">d4</button>
-                    <button class="btn" onclick="quickRoll('d6')">d6</button>
-                    <button class="btn" onclick="quickRoll('d8')">d8</button>
-                    <button class="btn" onclick="quickRoll('d10')">d10</button>
-                    <button class="btn" onclick="quickRoll('d12')">d12</button>
-                    <button class="btn" onclick="quickRoll('d20')">d20</button>
-                    <button class="btn" onclick="quickRoll('d100')">d100</button>
+            </div>
+        </section>
+
+        <!-- CENTER COLUMN: Skills Table -->
+        <section class="lg:col-span-5 bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 backdrop-blur-sm">
+            <h2 class="text-center font-cinzel text-base font-bold tracking-widest text-slate-200 uppercase mb-3 border-b border-slate-800 pb-2">
+                Perícias
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-800 font-semibold text-[11px]">
+                            <th class="py-1.5 px-1">Perícia</th>
+                            <th class="py-1.5 px-1 text-center">Atrib.</th>
+                            <th class="py-1.5 px-1 text-center">Bônus</th>
+                            <th class="py-1.5 px-1 text-center">Treino</th>
+                            <th class="py-1.5 px-1 text-center">Outros</th>
+                            <th class="py-1.5 px-1 text-center font-bold">Total</th>
+                            <th class="py-1.5 px-1 text-center">Rolar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="skills-tbody" class="divide-y divide-slate-800/40">
+                        <!-- Dynamic Skills Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: Interactive Tabs -->
+        <section class="lg:col-span-4 bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 backdrop-blur-sm flex flex-col">
+            <!-- Tabs Header -->
+            <div class="flex border-b border-slate-800 gap-1 pb-1 mb-3 no-scrollbar overflow-x-auto">
+                <button onclick="switchTab('dice')" id="tab-dice" class="tab-btn active px-3 py-1.5 rounded-t-lg text-xs font-semibold text-slate-300 hover:text-white transition whitespace-nowrap">
+                    <i class="fa-solid fa-dice-d20 mr-1 text-blue-400"></i> Dados
+                </button>
+                <button onclick="switchTab('attacks')" id="tab-attacks" class="tab-btn px-3 py-1.5 rounded-t-lg text-xs font-semibold text-slate-300 hover:text-white transition whitespace-nowrap">
+                    <i class="fa-solid fa-crosshairs mr-1 text-blue-400"></i> Ataques
+                </button>
+                <button onclick="switchTab('abilities')" id="tab-abilities" class="tab-btn px-3 py-1.5 rounded-t-lg text-xs font-semibold text-slate-300 hover:text-white transition whitespace-nowrap">
+                    <i class="fa-solid fa-bolt mr-1 text-blue-400"></i> Habilidades
+                </button>
+                <button onclick="switchTab('inventory')" id="tab-inventory" class="tab-btn px-3 py-1.5 rounded-t-lg text-xs font-semibold text-slate-300 hover:text-white transition whitespace-nowrap">
+                    <i class="fa-solid fa-box-open mr-1 text-blue-400"></i> Inventário
+                </button>
+                <button onclick="switchTab('notes')" id="tab-notes" class="tab-btn px-3 py-1.5 rounded-t-lg text-xs font-semibold text-slate-300 hover:text-white transition whitespace-nowrap">
+                    <i class="fa-solid fa-book-open mr-1 text-blue-400"></i> Anotações
+                </button>
+            </div>
+
+            <!-- Tab 1: Dice Roller -->
+            <div id="panel-dice" class="tab-panel flex-grow flex flex-col space-y-3">
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800">
+                    <label class="block text-[11px] font-medium text-slate-400 mb-1">Rolar dados (ex: d20+2, 2d6+5, d4)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="dice-input" placeholder="d20+2" class="flex-grow px-2.5 py-1 rounded text-xs font-mono" onkeypress="if(event.key==='Enter') rollCustomDice()">
+                        <button onclick="rollCustomDice()" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1 rounded text-xs font-bold transition">
+                            Rolar
+                        </button>
+                    </div>
                 </div>
-                <div class="dice-log" id="diceLog"></div>
+
+                <div class="grid grid-cols-4 gap-1.5">
+                    <button onclick="quickRoll(4)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d4</button>
+                    <button onclick="quickRoll(6)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d6</button>
+                    <button onclick="quickRoll(8)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d8</button>
+                    <button onclick="quickRoll(10)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d10</button>
+                    <button onclick="quickRoll(12)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d12</button>
+                    <button onclick="quickRoll(20)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d20</button>
+                    <button onclick="quickRoll(100)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs py-1 rounded border border-slate-700 font-mono transition">d100</button>
+                    <button onclick="clearDiceLog()" class="bg-red-950/40 hover:bg-red-900/40 text-red-400 text-xs py-1 rounded border border-red-900/40 transition">Limpar</button>
+                </div>
+
+                <div class="flex-grow bg-slate-950/80 border border-slate-800 rounded-lg p-2.5 overflow-y-auto max-h-64 space-y-2" id="dice-log">
+                    <p class="text-xs text-slate-500 italic text-center">Nenhuma rolagem efetuada ainda.</p>
+                </div>
             </div>
 
-            <!-- ABA ATAQUES -->
-            <div id="tab-combate" class="tab-content active">
-                <button class="btn" onclick="addAttack()">+ Novo Ataque</button>
-                <div class="dynamic-list" id="attacksList"></div>
+            <!-- Tab 2: Attacks & Shortcuts -->
+            <div id="panel-attacks" class="tab-panel flex-grow hidden flex flex-col space-y-3">
+                <form id="attack-form" onsubmit="addAttack(event)" class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="atk-name" placeholder="Nome do Ataque" required class="px-2 py-1 rounded text-xs">
+                        <input type="text" id="atk-damage" placeholder="Dano (ex: 2d8 ou d8)" required class="px-2 py-1 rounded text-xs font-mono">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="atk-skill" class="w-full px-2 py-1 rounded text-xs">
+                            <option value="Nenhuma">Perícia: Nenhuma</option>
+                        </select>
+                        <select id="atk-type" class="w-full px-2 py-1 rounded text-xs">
+                            <option value="Impacto">Impacto</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Perfuração">Perfuração</option>
+                            <option value="Ritual">Ritual</option>
+                            <option value="Ocultismo">Ocultismo</option>
+                            <option value="Queimadura">Queimadura</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-1 rounded text-xs font-bold transition">
+                        + Novo Ataque
+                    </button>
+                </form>
+
+                <div id="attacks-list" class="flex-grow overflow-y-auto space-y-2 max-h-80"></div>
             </div>
 
-            <!-- ABA HABILIDADES -->
-            <div id="tab-habilidades" class="tab-content">
-                <button class="btn" onclick="addSkillCard()">+ Nova Habilidade</button>
-                <div class="dynamic-list" id="habilidadesList"></div>
+            <!-- Tab 3: Abilities -->
+            <div id="panel-abilities" class="tab-panel flex-grow hidden flex flex-col space-y-3">
+                <form id="ability-form" onsubmit="addAbility(event)" class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="abi-name" placeholder="Nome da Habilidade" required class="px-2 py-1 rounded text-xs">
+                        <select id="abi-type" class="px-2 py-1 rounded text-xs">
+                            <option value="Ativa">Ativa</option>
+                            <option value="Passiva">Passiva</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="abi-damage" placeholder="Dano (ex: d20 ou 1d8)" class="px-2 py-1 rounded text-xs font-mono">
+                        <select id="abi-skill" class="px-2 py-1 rounded text-xs">
+                            <option value="Nenhuma">Perícia: Nenhuma</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="abi-dmg-type" class="px-2 py-1 rounded text-xs">
+                            <option value="Nenhum">Tipo Dano: N/A</option>
+                            <option value="Impacto">Impacto</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Perfuração">Perfuração</option>
+                            <option value="Ritual">Ritual</option>
+                            <option value="Ocultismo">Ocultismo</option>
+                            <option value="Queimadura">Queimadura</option>
+                        </select>
+                        <input type="text" id="abi-cooldown" placeholder="Cooldown" class="px-2 py-1 rounded text-xs">
+                    </div>
+                    <input type="text" id="abi-gain" placeholder="Ganho/Bônus (ex: +2 FOR)" class="w-full px-2 py-1 rounded text-xs">
+                    <textarea id="abi-desc" placeholder="Descrição da habilidade..." rows="2" class="w-full px-2 py-1 rounded text-xs resize-none"></textarea>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-1 rounded text-xs font-bold transition">
+                        + Nova Habilidade
+                    </button>
+                </form>
+
+                <div id="abilities-list" class="flex-grow overflow-y-auto space-y-2 max-h-80"></div>
             </div>
 
-            <!-- ABA INVENTÁRIO -->
-            <div id="tab-inventario" class="tab-content">
-                <button class="btn" onclick="addInventoryItem()">+ Novo Item</button>
-                <div class="dynamic-list" id="inventoryList"></div>
+            <!-- Tab 4: Inventory -->
+            <div id="panel-inventory" class="tab-panel flex-grow hidden flex flex-col space-y-3">
+                <form id="inventory-form" onsubmit="addItem(event)" class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800 space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="item-name" placeholder="Nome do Item" required class="px-2 py-1 rounded text-xs">
+                        <select id="item-category" class="px-2 py-1 rounded text-xs">
+                            <option value="Arma Curto Alcance">Arma (Curto Alcance)</option>
+                            <option value="Arma Médio Alcance">Arma (Médio Alcance)</option>
+                            <option value="Arma Longo Alcance">Arma (Longo Alcance)</option>
+                            <option value="Arremessável">Arremessável</option>
+                            <option value="Armadura">Armadura</option>
+                            <option value="Consumível">Consumível</option>
+                            <option value="Item Geral">Item Geral</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <input type="number" id="item-qty" placeholder="Qtd" value="" min="1" class="px-2 py-1 rounded text-xs">
+                        <input type="text" id="item-damage" placeholder="Dano" class="px-2 py-1 rounded text-xs font-mono">
+                        <select id="item-dmg-type" class="px-2 py-1 rounded text-xs">
+                            <option value="-">Tipo: -</option>
+                            <option value="Impacto">Impacto</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Perfuração">Perfuração</option>
+                            <option value="Ritual">Ritual</option>
+                            <option value="Ocultismo">Ocultismo</option>
+                            <option value="Queimadura">Queimadura</option>
+                        </select>
+                        <input type="text" id="item-price" placeholder="Valor $" class="px-2 py-1 rounded text-xs">
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <span class="text-xs text-slate-400 whitespace-nowrap">Munição:</span>
+                        <input type="number" id="item-ammo-cur" placeholder="Atual" class="w-full px-2 py-1 rounded text-xs">
+                        <span class="text-xs text-slate-400">/</span>
+                        <input type="number" id="item-ammo-max" placeholder="Máx" class="w-full px-2 py-1 rounded text-xs">
+                    </div>
+                    <input type="text" id="item-desc" placeholder="Descrição do item..." class="w-full px-2 py-1 rounded text-xs">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-1 rounded text-xs font-bold transition">
+                        + Novo Item
+                    </button>
+                </form>
+
+                <div id="inventory-list" class="flex-grow overflow-y-auto space-y-2 max-h-80"></div>
             </div>
 
-            <!-- ABA ANOTAÇÕES -->
-            <div id="tab-anotacoes" class="tab-content">
-                <textarea id="playerNotes" class="notes-area" placeholder="Escreva suas anotações aqui..." oninput="saveData()"></textarea>
+            <!-- Tab 5: Notes -->
+            <div id="panel-notes" class="tab-panel flex-grow hidden flex flex-col">
+                <textarea id="notes-content" class="w-full flex-grow p-2.5 rounded-lg border border-slate-800 bg-slate-950/80 text-xs leading-relaxed resize-none h-80 focus:ring-1 focus:ring-blue-500" placeholder="Anotações gerais..." oninput="saveData()"></textarea>
             </div>
-        </div>
+        </section>
 
-    </div>
+    </main>
 
+    <!-- App JavaScript Logic -->
     <script>
-        // LISTA COMPLETA DE PERÍCIAS SOLICITADAS
-        const skillsData = [
-            { name: "ACROBACIA", attr: "AGI" },
-            { name: "ADESTRAMENTO", attr: "PRE" },
-            { name: "ARREMESSO", attr: "FOR" },
-            { name: "ARTES", attr: "INT" },
-            { name: "ATLETISMO", attr: "FOR" },
-            { name: "ATUALIDADES", attr: "INT" },
-            { name: "AUTORIDADE", attr: "PRE" },
-            { name: "CIÊNCIAS", attr: "INT" },
-            { name: "COMPOSTURA", attr: "PRE" },
-            { name: "CORTE", attr: "AGI" },
-            { name: "DIREÇÃO", attr: "INT" },
-            { name: "ENGANAÇÃO", attr: "PRE" },
-            { name: "ETIQUETA", attr: "PRE" },
-            { name: "FANATISMO", attr: "PRE" },
-            { name: "FORTITUDE", attr: "FOR" },
-            { name: "FURTIVIDADE", attr: "AGI" },
-            { name: "IMPOSIÇÃO", attr: "FOR" },
-            { name: "INTIMIDAÇÃO", attr: "PRE" },
-            { name: "LUTA", attr: "FOR" },
-            { name: "MEDICINA", attr: "INT" },
-            { name: "OCULTISMO", attr: "INT" },
-            { name: "PERCEPÇÃO", attr: "INT" },
-            { name: "PERSUASÃO", attr: "PRE" },
-            { name: "PESQUISA", attr: "INT" },
-            { name: "PONTARIA", attr: "AGI" },
-            { name: "REFLEXO", attr: "AGI" },
-            { name: "RELIGIÃO", attr: "INT" },
-            { name: "RITUAL", attr: "INT" },
-            { name: "SOBREVIVÊNCIA", attr: "AGI" },
-            { name: "TÁTICA", attr: "FOR" },
-            { name: "VONTADE", attr: "PRE" }
+        const SKILLS_DATA = [
+            { name: "Acrobacia", attr: "AGI" },
+            { name: "Adestramento", attr: "PRE" },
+            { name: "Arremesso", attr: "FOR" },
+            { name: "Artes", attr: "INT" },
+            { name: "Atletismo", attr: "FOR" },
+            { name: "Atuação", attr: "PRE" },
+            { name: "Atualidades", attr: "INT" },
+            { name: "Autoridade", attr: "PRE" },
+            { name: "Ciências", attr: "INT" },
+            { name: "Compostura", attr: "PRE" },
+            { name: "Corte", attr: "AGI" },
+            { name: "Direção", attr: "INT" },
+            { name: "Enganação", attr: "PRE" },
+            { name: "Etiqueta", attr: "PRE" },
+            { name: "Fanatismo", attr: "PRE" },
+            { name: "Fortitude", attr: "FOR" },
+            { name: "Furtividade", attr: "AGI" },
+            { name: "Imposição", attr: "FOR" },
+            { name: "Intimidação", attr: "PRE" },
+            { name: "Luta", attr: "FOR" },
+            { name: "Medicina", attr: "INT" },
+            { name: "Ocultismo", attr: "INT" },
+            { name: "Percepção", attr: "INT" },
+            { name: "Persuasão", attr: "PRE" },
+            { name: "Pesquisa", attr: "INT" },
+            { name: "Pontaria", attr: "AGI" },
+            { name: "Reflexo", attr: "AGI" },
+            { name: "Religião", attr: "INT" },
+            { name: "Ritual", attr: "INT" },
+            { name: "Sobrevivência", attr: "AGI" },
+            { name: "Tática", attr: "FOR" },
+            { name: "Vontade", attr: "PRE" }
         ];
 
-        const ancestralBonuses = {
-            "Mafioso": { "INTIMIDAÇÃO": 2, "LUTA": 1 },
-            "Mercenário": { "TÁTICA": 1, "CORTE": 1, "LUTA": 1 },
-            "Cavaleiro": { "CORTE": 2, "COMPOSTURA": 1 },
-            "Artista": { "ARTES": 1, "ATUALIDADES": 1, "VONTADE": 1 },
-            "Criminoso": { "DIREÇÃO": 1, "CORTE": 1, "TÁTICA": 1 },
-            "Investigador/Detetive": { "PONTARIA": 2, "PERCEPÇÃO": 1 },
-            "Padre": { "RELIGIÃO": 2, "MEDICINA": 1 },
-            "Caçador": { "SOBREVIVÊNCIA": 2, "FURTIVIDADE": 1 },
-            "Líder": { "PERSUASÃO": 2, "VONTADE": 1 },
-            "Xamã": { "RITUAL": 2, "ADESTRAMENTO": 1 },
-            "Onmyoji": { "OCULTISMO": 2, "RITUAL": 1 },
-            "Samurai": { "CORTE": 2, "LUTA": 1 },
-            "Ninja": { "CORTE": 2, "FURTIVIDADE": 1 },
-            "Mongol": { "COMPOSTURA": 1, "VONTADE": 1, "DIREÇÃO": 1 },
-            "Militar": { "PONTARIA": 2, "TÁTICA": 1 },
-            "Policial": { "TÁTICA": 2, "AUTORIDADE": 1 },
-            "Engenheiro": { "CIÊNCIAS": 2, "PESQUISA": 1 },
-            "Apostador": { "PERSUASÃO": 2, "ETIQUETA": 1 },
-            "Cultista": { "RITUAL": 2, "OCULTISMO": 1 },
-            "Cientista": { "CIÊNCIAS": 2, "MEDICINA": 1 }
+        const ANCESTRAL_BONUSES = {
+            "Mafioso": { "Intimidação": 2, "Luta": 1 },
+            "Mercenário": { "Tática": 1, "Corte": 1, "Luta": 1 },
+            "Cavaleiro": { "Corte": 2, "Compostura": 1 },
+            "Artista": { "Artes": 1, "Atualidades": 1, "Vontade": 1 },
+            "Criminoso": { "Direção": 1, "Corte": 1, "Tática": 1 },
+            "Investigador/Detetive": { "Pontaria": 2, "Percepção": 1 },
+            "Padre": { "Religião": 2, "Medicina": 1 },
+            "Caçador": { "Sobrevivência": 2, "Furtividade": 1 },
+            "Líder": { "Persuasão": 2, "Vontade": 1 },
+            "Xamã": { "Ritual": 2, "Adestramento": 1 },
+            "Onmyoji": { "Ocultismo": 2, "Ritual": 1 },
+            "Samurai": { "Corte": 2, "Luta": 1 },
+            "Ninja": { "Corte": 2, "Furtividade": 1 },
+            "Mongol": { "Compostura": 1, "Vontade": 1, "Direção": 1 },
+            "Militar": { "Pontaria": 2, "Tática": 1 },
+            "Policial": { "Tática": 2, "Autoridade": 1 },
+            "Engenheiro": { "Ciências": 2, "Pesquisa": 1 },
+            "Apostador": { "Persuasão": 2, "Etiqueta": 1 },
+            "Cultista": { "Ritual": 2, "Ocultismo": 1 },
+            "Cientista": { "Ciências": 2, "Medicina": 1 }
         };
 
-        let barState = {
-            vida: { cur: 32, mode: 'raw' },
-            escudo: { cur: 10, mode: 'raw' },
-            esforco: { cur: 5, mode: 'raw' }
+        let sheetData = {
+            header: { name: "", ancestral: "", job: "", level: 1 },
+            attributes: { FOR: 0, AGI: 0, INT: 0, PRE: 0 },
+            bars: {
+                hp: { current: 32, max: 32, mode: 'raw' },
+                shield: { current: 10, max: 10, mode: 'raw' },
+                energy: { current: 5, max: 5, mode: 'raw' }
+            },
+            defenses: { impacto: 0, corte: 0, perfuracao: 0, ritual: 0, ocultismo: 0, queimadura: 0 },
+            skills: {},
+            attacks: [],
+            abilities: [],
+            inventory: [],
+            notes: ""
         };
 
         let holdTimer = null;
+        let holdInterval = null;
 
-        // INICIALIZAÇÃO
-        window.onload = () => {
-            renderSkills();
-            loadData();
-            updateStats();
-            updateBars();
-        };
-
-        // RENDERIZAR PERÍCIAS
-        function renderSkills() {
-            const container = document.getElementById('skillsList');
-            container.innerHTML = '';
-            skillsData.forEach(sk => {
-                const id = sk.name;
-                container.innerHTML += `
-                    <div class="skill-row" id="skill_row_${id}">
-                        <span class="skill-name" id="skill_name_${id}">${sk.name}</span>
-                        <span class="skill-attr">(${sk.attr})</span>
-                        <input type="number" id="sk_bonus_${id}" class="skill-input" value="0" readonly>
-                        <input type="number" id="sk_treino_${id}" class="skill-input" value="0" oninput="updateSkillTotal('${id}'); saveData();">
-                        <input type="number" id="sk_outros_${id}" class="skill-input" value="0" oninput="updateSkillTotal('${id}'); saveData();">
-                    </div>
-                `;
-            });
-        }
-
-        // BÔNUS DE ANCESTRAL
-        function applyAncestralBonus() {
-            const anc = document.getElementById('charAncestral').value;
-            skillsData.forEach(sk => {
-                document.getElementById(`sk_bonus_${sk.name}`).value = 0;
-            });
-            if (ancestralBonuses[anc]) {
-                for (const [skName, val] of Object.entries(ancestralBonuses[anc])) {
-                    const el = document.getElementById(`sk_bonus_${skName}`);
-                    if (el) el.value = val;
-                }
-            }
-            skillsData.forEach(sk => updateSkillTotal(sk.name));
-        }
-
-        function updateSkillTotal(id) {
-            const b = parseInt(document.getElementById(`sk_bonus_${id}`).value) || 0;
-            const t = parseInt(document.getElementById(`sk_treino_${id}`).value) || 0;
-            const o = parseInt(document.getElementById(`sk_outros_${id}`).value) || 0;
-            const total = b + t + o;
-            
-            const row = document.getElementById(`skill_row_${id}`);
-            if (total > 0) {
-                row.classList.add('skill-has-points');
-            } else {
-                row.classList.remove('skill-has-points');
-            }
-            return total;
-        }
-
-        function getSkillTotal(id) {
-            if (!id) return 0;
-            const b = parseInt(document.getElementById(`sk_bonus_${id}`)?.value) || 0;
-            const t = parseInt(document.getElementById(`sk_treino_${id}`)?.value) || 0;
-            const o = parseInt(document.getElementById(`sk_outros_${id}`)?.value) || 0;
-            return b + t + o;
-        }
-
-        // GRÁFICO RADAR E STATUS
-        function updateStats() {
-            const f = parseInt(document.getElementById('attr_for').value) || 0;
-            const a = parseInt(document.getElementById('attr_agi').value) || 0;
-            const p = parseInt(document.getElementById('attr_pre').value) || 0;
-            const i = parseInt(document.getElementById('attr_int').value) || 0;
-
-            const center = 100;
-            const maxR = 75;
-            const maxVal = 10;
-
-            const pFor = { x: center, y: center - Math.min(f / maxVal, 1) * maxR };
-            const pAgi = { x: center + Math.min(a / maxVal, 1) * maxR, y: center };
-            const pPre = { x: center, y: center + Math.min(p / maxVal, 1) * maxR };
-            const pInt = { x: center - Math.min(i / maxVal, 1) * maxR, y: center };
-
-            const points = `${pFor.x},${pFor.y} ${pAgi.x},${pAgi.y} ${pPre.x},${pPre.y} ${pInt.x},${pInt.y}`;
-            document.getElementById('radarPolygon').setAttribute('points', points);
-        }
-
-        // BARRAS INTERATIVAS
-        function updateBars() {
-            ['vida', 'escudo', 'esforco'].forEach(b => {
-                const max = parseInt(document.getElementById(`bar_${b}_max`).value) || 1;
-                if (barState[b].cur > max) barState[b].cur = max;
-                if (barState[b].cur < 0) barState[b].cur = 0;
-
-                const pct = Math.max(0, Math.min(100, (barState[b].cur / max) * 100));
-                document.getElementById(`bar_${b}_fill`).style.width = pct + '%';
-
-                const textEl = document.getElementById(`bar_${b}_text`);
-                if (barState[b].mode === 'raw') {
-                    textEl.innerText = `${barState[b].cur} / ${max}`;
-                } else {
-                    textEl.innerText = `${Math.round(pct)}%`;
-                }
-            });
-        }
-
-        function toggleBarDisplay(b) {
-            barState[b].mode = barState[b].mode === 'raw' ? 'pct' : 'raw';
-            updateBars();
-        }
-
-        function changeBarVal(b, delta) {
-            barState[b].cur += delta;
-            updateBars();
-            saveData();
-        }
-
-        function startHold(b, delta) {
-            changeBarVal(b, delta);
-            holdTimer = setInterval(() => changeBarVal(b, delta), 75);
+        function startHold(type, amount) {
+            adjustBar(type, amount);
+            holdTimer = setTimeout(() => {
+                holdInterval = setInterval(() => {
+                    adjustBar(type, amount);
+                }, 75);
+            }, 300);
         }
 
         function stopHold() {
-            if (holdTimer) clearInterval(holdTimer);
+            if (holdTimer) clearTimeout(holdTimer);
+            if (holdInterval) clearInterval(holdInterval);
+            holdTimer = null;
+            holdInterval = null;
         }
 
-        // ABAS
-        function switchTab(tabId) {
+        function toggleBarDisplay(type) {
+            if (!sheetData.bars[type].mode) sheetData.bars[type].mode = 'raw';
+            sheetData.bars[type].mode = sheetData.bars[type].mode === 'raw' ? 'percent' : 'raw';
+            updateBarUI(type);
+            saveData();
+        }
+
+        function updateBarUI(type) {
+            const displayElem = document.getElementById(`${type}-display`);
+            const maxElem = document.getElementById(`${type}-max`);
+            const barFill = document.getElementById(`${type}-bar`);
+
+            let maxVal = parseInt(maxElem.value) || 1;
+            let currentVal = sheetData.bars[type].current;
+
+            if (currentVal < 0) currentVal = 0;
+            if (currentVal > maxVal) currentVal = maxVal;
+
+            sheetData.bars[type].current = currentVal;
+            sheetData.bars[type].max = maxVal;
+
+            const percentage = Math.min(100, Math.max(0, (currentVal / maxVal) * 100));
+            barFill.style.width = `${percentage}%`;
+
+            if (sheetData.bars[type].mode === 'percent') {
+                displayElem.innerText = `${Math.round(percentage)}%`;
+            } else {
+                displayElem.innerText = `${currentVal} / ${maxVal}`;
+            }
+        }
+
+        function adjustBar(type, amount) {
+            const maxElem = document.getElementById(`${type}-max`);
+            let maxVal = parseInt(maxElem.value) || 1;
+            let currentVal = (sheetData.bars[type].current || 0) + amount;
+
+            if (currentVal < 0) currentVal = 0;
+            if (currentVal > maxVal) currentVal = maxVal;
+
+            sheetData.bars[type].current = currentVal;
+            updateBarUI(type);
+            saveData();
+        }
+
+        function updateAttribute(attr, val) {
+            sheetData.attributes[attr] = parseInt(val) || 0;
+            updateRadarGraph();
+            renderSkills();
+            saveData();
+        }
+
+        function updateRadarGraph() {
+            const maxVal = 10;
+            const center = 100;
+            const radius = 75;
+
+            const getPos = (val, direction) => {
+                const ratio = Math.min(Math.max(val, 0), maxVal) / maxVal;
+                const dist = ratio * radius;
+                switch (direction) {
+                    case 'TOP': return { x: center, y: center - dist };
+                    case 'RIGHT': return { x: center + dist, y: center };
+                    case 'BOTTOM': return { x: center, y: center + dist };
+                    case 'LEFT': return { x: center - dist, y: center };
+                }
+            };
+
+            const pFOR = getPos(sheetData.attributes.FOR, 'TOP');
+            const pAGI = getPos(sheetData.attributes.AGI, 'RIGHT');
+            const pPRE = getPos(sheetData.attributes.PRE, 'BOTTOM');
+            const pINT = getPos(sheetData.attributes.INT, 'LEFT');
+
+            const pointsStr = `${pFOR.x},${pFOR.y} ${pAGI.x},${pAGI.y} ${pPRE.x},${pPRE.y} ${pINT.x},${pINT.y}`;
+            document.getElementById("radar-polygon").setAttribute("points", pointsStr);
+        }
+
+        function applyAncestralBonus() {
+            const ancestral = document.getElementById("char-ancestral").value;
+            const bonuses = ANCESTRAL_BONUSES[ancestral] || {};
+
+            SKILLS_DATA.forEach(skill => {
+                if (!sheetData.skills[skill.name]) {
+                    sheetData.skills[skill.name] = { bonus: 0, train: 0, other: 0 };
+                }
+                sheetData.skills[skill.name].bonus = bonuses[skill.name] || 0;
+            });
+
+            renderSkills();
+            saveData();
+        }
+
+        function updateSkillVal(skillName, type, val) {
+            if (!sheetData.skills[skillName]) {
+                sheetData.skills[skillName] = { bonus: 0, train: 0, other: 0 };
+            }
+            sheetData.skills[skillName][type] = parseInt(val) || 0;
+            renderSkills();
+            saveData();
+        }
+
+        function getSkillTotal(skillName) {
+            const s = sheetData.skills[skillName] || { bonus: 0, train: 0, other: 0 };
+            return (s.bonus || 0) + (s.train || 0) + (s.other || 0);
+        }
+
+        function renderSkills() {
+            const tbody = document.getElementById("skills-tbody");
+            tbody.innerHTML = "";
+
+            const skillOptions = ['<option value="Nenhuma">Perícia: Nenhuma</option>'];
+
+            SKILLS_DATA.forEach(skill => {
+                const sData = sheetData.skills[skill.name] || { bonus: 0, train: 0, other: 0 };
+                const total = (sData.bonus || 0) + (sData.train || 0) + (sData.other || 0);
+                const attrVal = sheetData.attributes[skill.attr] || 0;
+                const rollTotal = total + attrVal;
+
+                const isHighlighted = total > 0;
+                const rowClass = isHighlighted ? "text-emerald-400 font-semibold" : "text-slate-300";
+
+                skillOptions.push(`<option value="${skill.name}">${skill.name} (${rollTotal >= 0 ? '+' : ''}${rollTotal})</option>`);
+
+                const tr = document.createElement("tr");
+                tr.className = "skill-row border-b border-slate-800/40 transition";
+                tr.innerHTML = `
+                    <td class="py-1 px-1 ${rowClass}">${skill.name}</td>
+                    <td class="py-1 px-1 text-center text-slate-400">(${skill.attr})</td>
+                    <td class="py-1 px-1 text-center font-mono text-slate-400">${sData.bonus || 0}</td>
+                    <td class="py-1 px-1 text-center">
+                        <input type="number" min="0" class="w-9 text-center py-0.5 rounded text-xs bg-slate-950/80 border border-slate-800" value="${sData.train || 0}" onchange="updateSkillVal('${skill.name}', 'train', this.value)">
+                    </td>
+                    <td class="py-1 px-1 text-center">
+                        <input type="number" min="0" class="w-9 text-center py-0.5 rounded text-xs bg-slate-950/80 border border-slate-800" value="${sData.other || 0}" onchange="updateSkillVal('${skill.name}', 'other', this.value)">
+                    </td>
+                    <td class="py-1 px-1 text-center font-bold font-mono ${isHighlighted ? 'text-emerald-400' : 'text-slate-200'}">${total}</td>
+                    <td class="py-1 px-1 text-center">
+                        <button onclick="rollSkill('${skill.name}', ${rollTotal})" class="text-blue-400 hover:text-blue-300 p-0.5 transition" title="Rolar 1d20 + Total">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById("atk-skill").innerHTML = skillOptions.join('');
+            document.getElementById("abi-skill").innerHTML = skillOptions.join('');
+        }
+
+        function switchTab(tabKey) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+
+            document.getElementById(`tab-${tabKey}`).classList.add('active');
+            document.getElementById(`panel-${tabKey}`).classList.remove('hidden');
         }
 
-        // ROLADOR DE DADOS
-        function parseAndRoll(formula, skillName = '') {
-            let cleanFormula = formula.toLowerCase().replace(/\s+/g, '');
+        function rollDiceFormula(formula, addedBonus = 0) {
+            let cleanFormula = formula.replace(/\s+/g, '').toLowerCase();
+
             if (cleanFormula.startsWith('d')) {
                 cleanFormula = '1' + cleanFormula;
             }
@@ -1039,366 +905,400 @@
             const diceRegex = /^(\d+)d(\d+)([\+\-]\d+)?$/;
             const match = cleanFormula.match(diceRegex);
 
-            let bonusSkill = getSkillTotal(skillName);
-            let logMsg = '';
-
-            if (match) {
-                const count = parseInt(match[1]);
-                const sides = parseInt(match[2]);
-                const mod = parseInt(match[3]) || 0;
-
-                let rolls = [];
-                let sum = 0;
-                for (let i = 0; i < count; i++) {
-                    const r = Math.floor(Math.random() * sides) + 1;
-                    rolls.push(r);
-                    sum += r;
-                }
-
-                const total = sum + mod + bonusSkill;
-                let skText = skillName ? ` + ${skillName}(${bonusSkill})` : '';
-                logMsg = `[${formula}] 🎲 (${rolls.join('+')}) ${mod >= 0 ? '+' + mod : mod}${skText} = <span class="result">${total}</span>`;
-            } else {
-                try {
-                    let total = eval(cleanFormula) + bonusSkill;
-                    logMsg = `[${formula}] = <span class="result">${total}</span>`;
-                } catch {
-                    logMsg = `<span style="color:#ef4444">Fórmula inválida!</span>`;
-                }
+            if (!match) {
+                return { error: true, msg: "Formato inválido! Use ex: d20, 1d20+3, 2d6-1" };
             }
 
-            const logEl = document.getElementById('diceLog');
-            logEl.innerHTML = `<div class="log-entry">${logMsg}</div>` + logEl.innerHTML;
+            const count = parseInt(match[1]);
+            const sides = parseInt(match[2]);
+            let modifier = match[3] ? parseInt(match[3]) : 0;
+            modifier += addedBonus;
+
+            if (count > 50 || sides > 1000) {
+                return { error: true, msg: "Muitos dados ou lados excessivos." };
+            }
+
+            let rolls = [];
+            let sum = 0;
+
+            for (let i = 0; i < count; i++) {
+                let roll = Math.floor(Math.random() * sides) + 1;
+                rolls.push(roll);
+                sum += roll;
+            }
+
+            const total = sum + modifier;
+            return {
+                error: false,
+                formula: formula + (addedBonus > 0 ? ` (+${addedBonus} Perícia)` : ''),
+                rolls: rolls,
+                modifier: modifier,
+                total: total
+            };
         }
 
         function rollCustomDice() {
-            const f = document.getElementById('diceFormula').value;
-            if (f) parseAndRoll(f);
+            const input = document.getElementById("dice-input");
+            const formula = input.value.trim();
+            if (!formula) return;
+
+            const res = rollDiceFormula(formula);
+            logDiceResult(res);
         }
 
-        function quickRoll(d) {
-            parseAndRoll(d);
+        function quickRoll(sides) {
+            const res = rollDiceFormula(`1d${sides}`);
+            logDiceResult(res);
         }
 
-        // CARTÕES DE ATAQUES
-        function addAttack(data = {}) {
-            const container = document.getElementById('attacksList');
-            const id = Date.now();
-            const div = document.createElement('div');
-            div.className = 'card-item';
-            div.id = `atk_${id}`;
-            
-            let skillOpts = `<option value="">Sem Perícia</option>`;
-            skillsData.forEach(s => {
-                skillOpts += `<option value="${s.name}" ${data.skill === s.name ? 'selected' : ''}>${s.name}</option>`;
-            });
-
-            const defTypes = ['Impacto', 'Corte', 'Perfuração', 'Ritual', 'Ocultismo', 'Queimadura'];
-            let defOpts = '';
-            defTypes.forEach(dt => {
-                defOpts += `<option value="${dt}" ${data.type === dt ? 'selected' : ''}>${dt}</option>`;
-            });
-
-            div.innerHTML = `
-                <div class="card-row">
-                    <input type="text" placeholder="Nome do Ataque" value="${data.name || ''}" oninput="saveData()">
-                    <input type="text" placeholder="Dano (ex: 1d4, 2d8)" value="${data.damage || ''}" style="width: 110px;" oninput="saveData()">
-                    <button class="btn" onclick="rollAttackCard('${id}')">🎲 Rolar</button>
-                    <button class="btn-delete" onclick="this.parentElement.parentElement.remove(); saveData();">X</button>
-                </div>
-                <div class="card-row">
-                    <select class="atk-skill" onchange="saveData()">${skillOpts}</select>
-                    <select class="atk-type" onchange="saveData()">${defOpts}</select>
-                </div>
-            `;
-            container.appendChild(div);
+        function rollSkill(skillName, bonus) {
+            switchTab('dice');
+            const modStr = bonus >= 0 ? `+${bonus}` : `${bonus}`;
+            const res = rollDiceFormula(`1d20${modStr}`);
+            res.label = `Perícia: ${skillName}`;
+            logDiceResult(res);
         }
 
-        function rollAttackCard(id) {
-            const card = document.getElementById(`atk_${id}`);
-            const dmg = card.querySelector('input[placeholder*="Dano"]').value;
-            const skill = card.querySelector('.atk-skill').value;
-            if (dmg) parseAndRoll(dmg, skill);
+        function rollActionShortcut(name, diceFormula, skillName) {
+            switchTab('dice');
+            const skillBonus = getSkillTotal(skillName);
+            const res = rollDiceFormula(diceFormula, skillBonus);
+            if (!res.error) {
+                res.label = `${name} ${skillName && skillName !== 'Nenhuma' ? `(Perícia: ${skillName})` : ''}`;
+            }
+            logDiceResult(res);
         }
 
-        // CARTÕES DE HABILIDADES
-        function addSkillCard(data = {}) {
-            const container = document.getElementById('habilidadesList');
-            const id = Date.now();
-            const div = document.createElement('div');
-            div.className = 'card-item';
-            div.id = `hab_${id}`;
+        function logDiceResult(res) {
+            const logContainer = document.getElementById("dice-log");
 
-            let skillOpts = `<option value="">Sem Perícia</option>`;
-            skillsData.forEach(s => {
-                skillOpts += `<option value="${s.name}" ${data.skill === s.name ? 'selected' : ''}>${s.name}</option>`;
-            });
+            if (logContainer.children.length === 1 && logContainer.children[0].tagName === 'P') {
+                logContainer.innerHTML = "";
+            }
 
-            const defTypes = ['Nenhum', 'Impacto', 'Corte', 'Perfuração', 'Ritual', 'Ocultismo', 'Queimadura'];
-            let defOpts = '';
-            defTypes.forEach(dt => {
-                defOpts += `<option value="${dt}" ${data.type === dt ? 'selected' : ''}>${dt}</option>`;
-            });
+            const card = document.createElement("div");
+            card.className = "bg-slate-900 border border-slate-800 p-2 rounded text-xs space-y-1 shadow";
 
-            div.innerHTML = `
-                <div class="card-row">
-                    <input type="text" placeholder="Nome da Habilidade" value="${data.name || ''}" oninput="saveData()">
-                    <select class="hab-kind" onchange="saveData()">
-                        <option value="Ativa" ${data.kind === 'Ativa' ? 'selected' : ''}>Ativa</option>
-                        <option value="Passiva" ${data.kind === 'Passiva' ? 'selected' : ''}>Passiva</option>
-                    </select>
-                    <button class="btn" onclick="rollHabCard('${id}')">🎲 Rolar</button>
-                    <button class="btn-delete" onclick="this.parentElement.parentElement.remove(); saveData();">X</button>
-                </div>
-                <div class="card-row">
-                    <input type="text" placeholder="Dano (ex: d20, 2d6)" value="${data.damage || ''}" style="width: 110px;" oninput="saveData()">
-                    <select class="hab-skill" onchange="saveData()">${skillOpts}</select>
-                    <select class="hab-type" onchange="saveData()">${defOpts}</select>
-                </div>
-                <div class="card-row">
-                    <input type="text" placeholder="Ganho (Suporte/Atributo)" value="${data.gain || ''}" oninput="saveData()">
-                    <input type="text" placeholder="Cooldown" value="${data.cd || ''}" style="width: 90px;" oninput="saveData()">
-                </div>
-                <div class="card-row">
-                    <textarea placeholder="Descrição da habilidade..." style="width:100%; height:45px;" oninput="saveData()">${data.desc || ''}</textarea>
-                </div>
-            `;
-            container.appendChild(div);
+            if (res.error) {
+                card.innerHTML = `<span class="text-red-400 font-semibold"><i class="fa-solid fa-triangle-exclamation"></i> ${res.msg}</span>`;
+            } else {
+                const rollsStr = res.rolls.join(", ");
+                const modStr = res.modifier ? (res.modifier > 0 ? ` + ${res.modifier}` : ` - ${Math.abs(res.modifier)}`) : "";
+                const labelStr = res.label ? `<div class="font-bold text-slate-300 text-[11px] mb-0.5">${res.label}</div>` : "";
+
+                card.innerHTML = `
+                    ${labelStr}
+                    <div class="flex justify-between items-center">
+                        <span class="font-mono text-slate-400">${res.formula}</span>
+                        <span class="text-base font-extrabold text-amber-400 font-mono">${res.total}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 font-mono">Dados: [${rollsStr}] ${modStr}</div>
+                `;
+            }
+
+            logContainer.prepend(card);
         }
 
-        function rollHabCard(id) {
-            const card = document.getElementById(`hab_${id}`);
-            const dmg = card.querySelector('input[placeholder*="Dano"]').value;
-            const skill = card.querySelector('.hab-skill').value;
-            if (dmg) parseAndRoll(dmg, skill);
+        function clearDiceLog() {
+            document.getElementById("dice-log").innerHTML = '<p class="text-xs text-slate-500 italic text-center">Nenhuma rolagem efetuada ainda.</p>';
         }
 
-        // CARTÕES DE INVENTÁRIO
-        function addInventoryItem(data = {}) {
-            const container = document.getElementById('inventoryList');
-            const div = document.createElement('div');
-            div.className = 'card-item';
+        function addAttack(e) {
+            e.preventDefault();
+            const name = document.getElementById("atk-name").value.trim();
+            const damage = document.getElementById("atk-damage").value.trim();
+            const skill = document.getElementById("atk-skill").value;
+            const type = document.getElementById("atk-type").value;
 
-            const itemTypes = ['Arma de curto alcance', 'Médio alcance', 'Longo alcance', 'Arremessável', 'Armadura', 'Consumível', 'Item'];
-            let typeOpts = '';
-            itemTypes.forEach(it => {
-                typeOpts += `<option value="${it}" ${data.type === it ? 'selected' : ''}>${it}</option>`;
-            });
-
-            const defTypes = ['Nenhum', 'Impacto', 'Corte', 'Perfuração', 'Ritual', 'Ocultismo', 'Queimadura'];
-            let defOpts = '';
-            defTypes.forEach(dt => {
-                defOpts += `<option value="${dt}" ${data.dmgType === dt ? 'selected' : ''}>${dt}</option>`;
-            });
-
-            div.innerHTML = `
-                <div class="card-row">
-                    <input type="text" placeholder="Nome do Item" value="${data.name || ''}" oninput="saveData()">
-                    <select onchange="saveData()">${typeOpts}</select>
-                    <button class="btn-delete" onclick="this.parentElement.parentElement.remove(); saveData();">X</button>
-                </div>
-                <div class="card-row">
-                    <input type="number" placeholder="Qtd" value="${data.qty || ''}" style="width: 60px;" oninput="saveData()">
-                    <input type="text" placeholder="Dano" value="${data.damage || ''}" style="width: 80px;" oninput="saveData()">
-                    <select onchange="saveData()">${defOpts}</select>
-                    <input type="text" placeholder="Valor $" value="${data.price || ''}" style="width: 70px;" oninput="saveData()">
-                    <input type="text" placeholder="Munição [10/20]" value="${data.ammo || ''}" style="width: 100px;" oninput="saveData()">
-                </div>
-                <div class="card-row">
-                    <textarea placeholder="Descrição do item..." style="width:100%; height:40px;" oninput="saveData()">${data.desc || ''}</textarea>
-                </div>
-            `;
-            container.appendChild(div);
+            sheetData.attacks.push({ id: Date.now(), name, damage, skill, type });
+            document.getElementById("attack-form").reset();
+            saveData();
+            renderAttacks();
         }
 
-        // SALVAMENTO AUTOMÁTICO VIA LOCALSTORAGE
-        function getSheetState() {
-            const state = {
-                header: {
-                    name: document.getElementById('charName').value,
-                    ancestral: document.getElementById('charAncestral').value,
-                    class: document.getElementById('charClass').value,
-                    level: document.getElementById('charLevel').value
-                },
-                attributes: {
-                    for: document.getElementById('attr_for').value,
-                    agi: document.getElementById('attr_agi').value,
-                    pre: document.getElementById('attr_pre').value,
-                    int: document.getElementById('attr_int').value
-                },
-                bars: {
-                    vida: { cur: barState.vida.cur, max: document.getElementById('bar_vida_max').value },
-                    escudo: { cur: barState.escudo.cur, max: document.getElementById('bar_escudo_max').value },
-                    esforco: { cur: barState.esforco.cur, max: document.getElementById('bar_esforco_max').value }
-                },
-                defenses: {},
-                skills: {},
-                attacks: [],
-                habilidades: [],
-                inventory: [],
-                notes: document.getElementById('playerNotes').value
-            };
+        function deleteAttack(id) {
+            sheetData.attacks = sheetData.attacks.filter(a => a.id !== id);
+            saveData();
+            renderAttacks();
+        }
 
-            defs.forEach(d => {
-                const id = d.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                state.defenses[id] = document.getElementById(`def_${id}`).value;
+        function renderAttacks() {
+            const container = document.getElementById("attacks-list");
+            container.innerHTML = "";
+
+            if (sheetData.attacks.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-3">Nenhum ataque cadastrado.</p>`;
+                return;
+            }
+
+            sheetData.attacks.forEach(atk => {
+                const card = document.createElement("div");
+                card.className = "bg-slate-950/80 border border-slate-800 p-2 rounded-lg flex items-center justify-between gap-2";
+                card.innerHTML = `
+                    <div>
+                        <div class="font-bold text-xs text-slate-200">${atk.name}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">
+                            Dano: ${atk.damage} | Perícia: ${atk.skill} | <span class="text-amber-400">${atk.type}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="rollActionShortcut('${atk.name}', '${atk.damage}', '${atk.skill}')" class="bg-blue-600/80 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-[11px] font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-dice-d20"></i> Rolar
+                        </button>
+                        <button onclick="deleteAttack(${atk.id})" class="text-slate-500 hover:text-red-400 px-1 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addAbility(e) {
+            e.preventDefault();
+            const name = document.getElementById("abi-name").value.trim();
+            const type = document.getElementById("abi-type").value;
+            const damage = document.getElementById("abi-damage").value.trim();
+            const skill = document.getElementById("abi-skill").value;
+            const dmgType = document.getElementById("abi-dmg-type").value;
+            const cooldown = document.getElementById("abi-cooldown").value.trim();
+            const gain = document.getElementById("abi-gain").value.trim();
+            const desc = document.getElementById("abi-desc").value.trim();
+
+            sheetData.abilities.push({ id: Date.now(), name, type, damage, skill, dmgType, cooldown, gain, desc });
+            document.getElementById("ability-form").reset();
+            saveData();
+            renderAbilities();
+        }
+
+        function deleteAbility(id) {
+            sheetData.abilities = sheetData.abilities.filter(a => a.id !== id);
+            saveData();
+            renderAbilities();
+        }
+
+        function renderAbilities() {
+            const container = document.getElementById("abilities-list");
+            container.innerHTML = "";
+
+            if (sheetData.abilities.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-3">Nenhuma habilidade cadastrada.</p>`;
+                return;
+            }
+
+            sheetData.abilities.forEach(abi => {
+                const card = document.createElement("div");
+                card.className = "bg-slate-950/80 border border-slate-800 p-2 rounded-lg space-y-1";
+                const typeBadge = abi.type === "Ativa" ? "bg-amber-950/60 text-amber-300 border-amber-800/50" : "bg-blue-950/60 text-blue-300 border-blue-800/50";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-xs text-slate-200">${abi.name}</span>
+                            <span class="text-[9px] px-1.5 py-0.5 rounded border ${typeBadge}">${abi.type}</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            ${abi.damage ? `
+                                <button onclick="rollActionShortcut('${abi.name}', '${abi.damage}', '${abi.skill}')" class="bg-blue-600/80 hover:bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-dice-d20"></i> Rolar
+                                </button>
+                            ` : ''}
+                            <button onclick="deleteAbility(${abi.id})" class="text-slate-500 hover:text-red-400 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-slate-400 space-x-2">
+                        ${abi.damage ? `<span><b>Dano:</b> ${abi.damage} (${abi.dmgType})</span>` : ''}
+                        ${abi.skill && abi.skill !== 'Nenhuma' ? `<span><b>Perícia:</b> ${abi.skill}</span>` : ''}
+                        ${abi.cooldown ? `<span><b>CD:</b> ${abi.cooldown}</span>` : ''}
+                        ${abi.gain ? `<span><b>Ganho:</b> ${abi.gain}</span>` : ''}
+                    </div>
+                    ${abi.desc ? `<p class="text-[11px] text-slate-300 pt-1 border-t border-slate-900 leading-tight">${abi.desc}</p>` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addItem(e) {
+            e.preventDefault();
+            const name = document.getElementById("item-name").value.trim();
+            const category = document.getElementById("item-category").value;
+            const qtyInput = document.getElementById("item-qty").value;
+            const qty = qtyInput !== "" ? parseInt(qtyInput) : "";
+            const damage = document.getElementById("item-damage").value.trim();
+            const dmgType = document.getElementById("item-dmg-type").value;
+            const price = document.getElementById("item-price").value.trim();
+            const ammoCur = document.getElementById("item-ammo-cur").value;
+            const ammoMax = document.getElementById("item-ammo-max").value;
+            const desc = document.getElementById("item-desc").value.trim();
+
+            sheetData.inventory.push({
+                id: Date.now(), name, category, qty, damage, dmgType, price,
+                ammo: { current: ammoCur, max: ammoMax }, desc
             });
 
-            skillsData.forEach(s => {
-                state.skills[s.name] = {
-                    treino: document.getElementById(`sk_treino_${s.name}`).value,
-                    outros: document.getElementById(`sk_outros_${s.name}`).value
-                };
-            });
+            document.getElementById("inventory-form").reset();
+            saveData();
+            renderInventory();
+        }
 
-            document.querySelectorAll('#attacksList .card-item').forEach(card => {
-                const inputs = card.querySelectorAll('input');
-                const selects = card.querySelectorAll('select');
-                state.attacks.push({
-                    name: inputs[0].value,
-                    damage: inputs[1].value,
-                    skill: selects[0].value,
-                    type: selects[1].value
-                });
-            });
+        function deleteItem(id) {
+            sheetData.inventory = sheetData.inventory.filter(i => i.id !== id);
+            saveData();
+            renderInventory();
+        }
 
-            document.querySelectorAll('#habilidadesList .card-item').forEach(card => {
-                const inputs = card.querySelectorAll('input');
-                const selects = card.querySelectorAll('select');
-                const txt = card.querySelector('textarea');
-                state.habilidades.push({
-                    name: inputs[0].value,
-                    kind: selects[0].value,
-                    damage: inputs[1].value,
-                    skill: selects[1].value,
-                    type: selects[2].value,
-                    gain: inputs[2].value,
-                    cd: inputs[3].value,
-                    desc: txt.value
-                });
-            });
+        function renderInventory() {
+            const container = document.getElementById("inventory-list");
+            container.innerHTML = "";
 
-            document.querySelectorAll('#inventoryList .card-item').forEach(card => {
-                const inputs = card.querySelectorAll('input');
-                const selects = card.querySelectorAll('select');
-                const txt = card.querySelector('textarea');
-                state.inventory.push({
-                    name: inputs[0].value,
-                    type: selects[0].value,
-                    qty: inputs[1].value,
-                    damage: inputs[2].value,
-                    dmgType: selects[1].value,
-                    price: inputs[3].value,
-                    ammo: inputs[4].value,
-                    desc: txt.value
-                });
-            });
+            if (sheetData.inventory.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-3">Inventário vazio.</p>`;
+                return;
+            }
 
-            return state;
+            sheetData.inventory.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "bg-slate-950/80 border border-slate-800 p-2 rounded-lg space-y-1";
+                const hasAmmo = item.ammo.current !== "" || item.ammo.max !== "";
+                const ammoDisplay = hasAmmo ? `[ ${item.ammo.current || 0} / ${item.ammo.max || 0} ]` : "";
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="font-bold text-xs text-slate-200">${item.name}</span>
+                            ${item.qty !== "" && item.qty !== undefined ? `<span class="text-[10px] text-slate-400 ml-1">x${item.qty}</span>` : ''}
+                            <span class="text-[9px] text-slate-500 block">${item.category}</span>
+                        </div>
+                        <button onclick="deleteItem(${item.id})" class="text-slate-500 hover:text-red-400 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="text-[10px] text-slate-400 flex flex-wrap gap-2">
+                        ${item.damage ? `<span><b>Dano:</b> ${item.damage} (${item.dmgType})</span>` : ''}
+                        ${item.price ? `<span><b>Valor:</b> $${item.price}</span>` : ''}
+                        ${hasAmmo ? `<span class="text-amber-400"><b>Munição:</b> ${ammoDisplay}</span>` : ''}
+                    </div>
+                    ${item.desc ? `<p class="text-[11px] text-slate-300 pt-1 border-t border-slate-900 leading-tight">${item.desc}</p>` : ''}
+                `;
+                container.appendChild(card);
+            });
         }
 
         function saveData() {
-            const state = getSheetState();
-            localStorage.setItem('rpg_sheet_data', JSON.stringify(state));
+            sheetData.header.name = document.getElementById("char-name").value;
+            sheetData.header.ancestral = document.getElementById("char-ancestral").value;
+            sheetData.header.job = document.getElementById("char-class").value;
+            sheetData.header.level = document.getElementById("char-level").value;
+
+            sheetData.attributes.FOR = parseInt(document.getElementById("attr-for").value) || 0;
+            sheetData.attributes.AGI = parseInt(document.getElementById("attr-agi").value) || 0;
+            sheetData.attributes.INT = parseInt(document.getElementById("attr-int").value) || 0;
+            sheetData.attributes.PRE = parseInt(document.getElementById("attr-pre").value) || 0;
+
+            sheetData.defenses.impacto = parseInt(document.getElementById("def-impacto").value) || 0;
+            sheetData.defenses.corte = parseInt(document.getElementById("def-corte").value) || 0;
+            sheetData.defenses.perfuracao = parseInt(document.getElementById("def-perfuracao").value) || 0;
+            sheetData.defenses.ritual = parseInt(document.getElementById("def-ritual").value) || 0;
+            sheetData.defenses.ocultismo = parseInt(document.getElementById("def-ocultismo").value) || 0;
+            sheetData.defenses.queimadura = parseInt(document.getElementById("def-queimadura").value) || 0;
+
+            sheetData.notes = document.getElementById("notes-content").value;
+
+            localStorage.setItem("rpg_sheet_data", JSON.stringify(sheetData));
         }
 
-        function loadData() {
-            const dataStr = localStorage.getItem('rpg_sheet_data');
-            if (!dataStr) return;
-            const data = JSON.parse(dataStr);
-            applyState(data);
-        }
+        function loadSavedData() {
+            const saved = localStorage.getItem("rpg_sheet_data");
+            if (!saved) return;
 
-        function applyState(data) {
-            if (data.header) {
-                document.getElementById('charName').value = data.header.name || '';
-                document.getElementById('charAncestral').value = data.header.ancestral || '';
-                document.getElementById('charClass').value = data.header.class || '';
-                document.getElementById('charLevel').value = data.header.level || 1;
-            }
+            try {
+                sheetData = JSON.parse(saved);
 
-            if (data.attributes) {
-                document.getElementById('attr_for').value = data.attributes.for || 0;
-                document.getElementById('attr_agi').value = data.attributes.agi || 0;
-                document.getElementById('attr_pre').value = data.attributes.pre || 0;
-                document.getElementById('attr_int').value = data.attributes.int || 0;
-            }
+                document.getElementById("char-name").value = sheetData.header.name || "";
+                document.getElementById("char-ancestral").value = sheetData.header.ancestral || "";
+                document.getElementById("char-class").value = sheetData.header.job || "";
+                document.getElementById("char-level").value = sheetData.header.level || 1;
 
-            if (data.bars) {
-                document.getElementById('bar_vida_max').value = data.bars.vida.max || 32;
-                barState.vida.cur = parseInt(data.bars.vida.cur) || 32;
-                document.getElementById('bar_escudo_max').value = data.bars.escudo.max || 10;
-                barState.escudo.cur = parseInt(data.bars.escudo.cur) || 10;
-                document.getElementById('bar_esforco_max').value = data.bars.esforco.max || 5;
-                barState.esforco.cur = parseInt(data.bars.esforco.cur) || 5;
-            }
+                document.getElementById("attr-for").value = sheetData.attributes.FOR || 0;
+                document.getElementById("attr-agi").value = sheetData.attributes.AGI || 0;
+                document.getElementById("attr-int").value = sheetData.attributes.INT || 0;
+                document.getElementById("attr-pre").value = sheetData.attributes.PRE || 0;
 
-            if (data.defenses) {
-                defs.forEach(d => {
-                    const id = d.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    if (data.defenses[id] !== undefined) {
-                        document.getElementById(`def_${id}`).value = data.defenses[id];
+                ['hp', 'shield', 'energy'].forEach(type => {
+                    const b = sheetData.bars[type];
+                    if (b) {
+                        document.getElementById(`${type}-max`).value = b.max;
+                        if (!b.mode) b.mode = 'raw';
+                        updateBarUI(type);
                     }
                 });
+
+                document.getElementById("def-impacto").value = sheetData.defenses.impacto || 0;
+                document.getElementById("def-corte").value = sheetData.defenses.corte || 0;
+                document.getElementById("def-perfuracao").value = sheetData.defenses.perfuracao || 0;
+                document.getElementById("def-ritual").value = sheetData.defenses.ritual || 0;
+                document.getElementById("def-ocultismo").value = sheetData.defenses.ocultismo || 0;
+                document.getElementById("def-queimadura").value = sheetData.defenses.queimadura || 0;
+
+                document.getElementById("notes-content").value = sheetData.notes || "";
+
+            } catch(e) {
+                console.error("Erro ao carregar dados salvos:", e);
             }
-
-            applyAncestralBonus();
-
-            if (data.skills) {
-                skillsData.forEach(s => {
-                    if (data.skills[s.name]) {
-                        document.getElementById(`sk_treino_${s.name}`).value = data.skills[s.name].treino || 0;
-                        document.getElementById(`sk_outros_${s.name}`).value = data.skills[s.name].outros || 0;
-                        updateSkillTotal(s.name);
-                    }
-                });
-            }
-
-            document.getElementById('attacksList').innerHTML = '';
-            if (data.attacks) data.attacks.forEach(atk => addAttack(atk));
-
-            document.getElementById('habilidadesList').innerHTML = '';
-            if (data.habilidades) data.habilidades.forEach(hab => addSkillCard(hab));
-
-            document.getElementById('inventoryList').innerHTML = '';
-            if (data.inventory) data.inventory.forEach(inv => addInventoryItem(inv));
-
-            if (data.notes !== undefined) {
-                document.getElementById('playerNotes').value = data.notes;
-            }
-
-            updateStats();
-            updateBars();
         }
 
-        // EXPORTAR E IMPORTAR JSON BACKUP
         function exportJSON() {
-            const state = getSheetState();
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `${state.header.name || 'ficha'}_backup.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+            saveData();
+            const jsonStr = JSON.stringify(sheetData, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${sheetData.header.name || "personagem"}_ficha.json`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         function importJSON(event) {
             const file = event.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const data = JSON.parse(e.target.result);
-                    applyState(data);
-                    saveData();
-                    alert('Ficha carregada com sucesso!');
-                } catch {
-                    alert('Erro ao carregar o arquivo JSON!');
+                    const imported = JSON.parse(e.target.result);
+                    sheetData = imported;
+                    localStorage.setItem("rpg_sheet_data", JSON.stringify(sheetData));
+                    loadSavedData();
+                    updateRadarGraph();
+                    renderSkills();
+                    renderAttacks();
+                    renderAbilities();
+                    renderInventory();
+                } catch(err) {
+                    alert("Arquivo JSON inválido!");
                 }
             };
             reader.readAsText(file);
         }
+
+        function resetData() {
+            if(confirm("Tem certeza que deseja resetar toda a ficha?")) {
+                localStorage.removeItem("rpg_sheet_data");
+                location.reload();
+            }
+        }
+
+        window.onload = function() {
+            loadSavedData();
+            updateRadarGraph();
+            renderSkills();
+            renderAttacks();
+            renderAbilities();
+            renderInventory();
+        };
     </script>
 </body>
 </html>
